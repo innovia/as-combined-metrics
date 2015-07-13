@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib]))
+require 'thor'
+require 'as-combined-metrics'
+require 'active_support/hash_with_indifferent_access'
+require 'pry'
+
+
+def help
+  AsCombinedMetrics::Cli.help(Thor::Base.shell.new) 
+end
+
+
+begin
+  ENV["THOR_DEBUG"] = "1" 
+  AsCombinedMetrics::Cli.start
+rescue Thor::RequiredArgumentMissingError => e
+  puts "\e[31mMissing Arguments: #{e}\e[0m\n\n"
+  help
+rescue Thor::InvocationError => e
+  puts "\e[31m#{e.to_s.gsub(/Usage:.+"/, '').chomp} but there's no such option\e[0m\n\n"
+  help
+end
+
+
