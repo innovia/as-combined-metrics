@@ -124,12 +124,12 @@ policy sample
 }
 ````
 
-Credentials are loaded automatically from the following locations:
+Credentials are loaded automatically from the following locations (AWS-SDK handled):
 
-ENV['AWS_ACCESS_KEY_ID'] and ENV['AWS_SECRET_ACCESS_KEY']
-Aws.config[:credentials]
-Shared credentials file, ~/.aws/credentials
-EC2 Instance profile
+* ENV['AWS_ACCESS_KEY_ID'] and ENV['AWS_SECRET_ACCESS_KEY']
+* Aws.config[:credentials]
+* Shared credentials file, ~/.aws/credentials
+* EC2 Instance profile
 
 
 Contributing
