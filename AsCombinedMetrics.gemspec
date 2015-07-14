@@ -4,7 +4,7 @@ $:.push File.expand_path("../lib/as-combined-metrics", __FILE__)
 require File.expand_path('../lib/as-combined-metrics', __FILE__)
 
 Gem::Specification.new do |s|
-  s.name        = "AsCombinedMetrics"
+  s.name        = "as-combined-metrics"
   s.version     = AsCombinedMetrics::VERSION
   s.authors     = ["Ami Mahloof"]
   s.email       = "ami.mahloof@gmail.com"

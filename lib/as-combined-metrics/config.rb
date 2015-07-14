@@ -6,9 +6,15 @@ end
 module AsCombinedMetrics::Cli::Config
   def load_config
     logger.progname = "#{Module.nesting.first.to_s} #{__method__}"
-    
+    raise ConfigError, "Config file not found" if !File.exists?(options[:config_file])
+
     sha1_config = Digest::SHA1.hexdigest(File.read(options[:config_file]))
-    sha1_config_bkp = Digest::SHA1.hexdigest(File.read("#{options[:config_file]}.bkp"))
+
+    if File.exists?("#{options[:config_file]}.bkp")
+      sha1_config_bkp = Digest::SHA1.hexdigest(File.read("#{options[:config_file]}.bkp")) 
+    else
+      sha1_config_bkp = nil
+    end
 
     if sha1_config != sha1_config_bkp
       logger.info { set_color  "Backing up original config file to #{options[:config_file]}.bkp", :white }

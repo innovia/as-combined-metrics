@@ -3,8 +3,6 @@ $:.unshift File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib]))
 require 'thor'
 require 'as-combined-metrics'
 require 'active_support/hash_with_indifferent_access'
-require 'pry'
-
 
 def help
   AsCombinedMetrics::Cli.help(Thor::Base.shell.new) 

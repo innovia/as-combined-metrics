@@ -6,7 +6,6 @@ require 'aws-sdk'
 require 'yaml'
 require 'pp'
 require 'time'
-require 'pry'
 
 class AsCombinedMetrics::Cli < Thor
   autoload :Logging,        'as-combined-metrics/logger'
@@ -22,7 +21,7 @@ class AsCombinedMetrics::Cli < Thor
 
   class_option  :region,              :desc => 'AWS Region',                                          :default => 'us-east-1',      :aliases => 'r', :type => :string
   class_option  :log_level,           :desc => 'Log level',                                           :default => 'INFO',           :aliases => 'l', :type => :string
-  class_option  :config_file,         :desc => 'Metrics config file location',                                                      :aliases => 'f', :type => :string, :default => './combinedMetrics.yml'
+  class_option  :config_file,         :desc => 'Metrics config file location',                                                      :aliases => 'f', :type => :string
   class_option  :scalein_only,        :desc => 'gather combined metrics for scale in only',           :default => false
   class_option  :scaleout_only,       :desc => 'gather combined metrics for scale out only',          :default => false
   class_option  :period,              :desc => 'Metric datapoint last x minutes',                     :default => 300,              :aliases => 'p', :type => :numeric
