@@ -31,9 +31,9 @@ module AsCombinedMetrics::Cli::Aws
     if ENV['STACK_NAME']
       logger.info { set_color "STACK_NAME Env variable was found [ #{ENV['STACK_NAME']} ]", :cyan }
       @stack_name = ENV['STACK_NAME']
-    elsif @config["cloudformation"]["stack_name"]
-      logger.info { set_color "STACK_NAME was found in the config file #{@config["cloudformation"]["stack_name"]}", :cyan }
-      @stack_name = @config["cloudformation"]["stack_name"]
+    elsif @config[:cloudformation][:stack_name]
+      logger.info { set_color "STACK_NAME was found in the config file #{@config[:cloudformation][:stack_name]}", :cyan }
+      @stack_name = @config[:cloudformation][:stack_name]
     else
       logger.fatal { set_color "verify_stack_name_env Env variable STACK_NAME was not found or does not have a value, exiting now...", :red }
       exit 1  
