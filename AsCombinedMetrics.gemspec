@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.version     = AsCombinedMetrics::VERSION
   s.authors     = ["Ami Mahloof"]
   s.email       = "ami.mahloof@gmail.com"
-  s.homepage    = "https://github.com/innovia/AwsCombinedMetrics"
-  s.summary     = "submit custom AWS CloudWatch metric that combines several other thresholds for scale in or out"
+  s.homepage    = "https://github.com/innovia/as-combined-metrics"
+  s.summary     = "Submit custom AWS CloudWatch metric that combines several other thresholds for scale in or out"
   s.description = "AWS custom combined metric CloudWatch tool"
   s.required_rubygems_version = ">= 1.3.6"
   s.files = `git ls-files`.split($\).reject{|n| n =~ %r[png|gif\z]}.reject{|n| n =~ %r[^(test|spec|features)/]}

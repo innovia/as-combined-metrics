@@ -31,7 +31,14 @@ ScaleOut:
   unit: Percent
   threshold: 20
   comparison_operator: <=
+  aggregate_as_group: true
 ````
+
+you can specify aggregate_as_group: true in the config and it will aggregate based on the statistics you passed across ec2 instances
+
+Note:
+AWS is already agregating the instances metrics on the AutoScaleGroupName dimension for you (so if you are pushing a custom metrics you shold be pushing it to the autoscale group diemension)
+
 
 if the autoscale group needs to be extracted from the stack name you specify (useful for discovery uisng cloudformation)
 ````yml
@@ -43,7 +50,7 @@ cloudformation:
 ````
 
 The app will combined the results of all metrics into a true / flase array
-for ScaleOut events it will check if any element in the array is true and will publish a custom metric (i.e ScaleOut_CPUUtilization_NetworkIn ) under the combined_metrics custom name space in CloudWatch
+for ScaleOut events it will check if any element in the array is true and will publish a custom metric (i.e ScaleOut_CPUUtilization_NetworkIn ) under the combined_metrics custom name space in CloudWatch on the AutoScale Group dimension you have specified in the config
 
 you can then set a single alarm and a single policy to perform your scale activity if itsthe value is 1 (O.K to scale in/out)
 

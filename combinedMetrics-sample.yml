@@ -7,7 +7,7 @@ cloudformation:
 
 autoscale_group_name: GROUP_NAME-X
 
-scaleup:
+ScaleIn:
 - metric_name: CPUUtilization
   namespace: AWS/EC2
   statistics:
@@ -29,8 +29,10 @@ scaleup:
   unit: Bytes
   threshold: 7864320
   comparison_operator: <=
+  aggregate_as_group: true
 
-scaledown:
+
+ScaleOut:
 - metric_name: CPUUtilization
   namespace: AWS/EC2
   statistics:
