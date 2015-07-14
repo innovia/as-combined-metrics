@@ -1,8 +1,6 @@
 AWS Autoscale Combined Metrics
 ==============================
 
-Beta - Not Production Ready!
-
 AWS currently (July 2015) does not evalute other policies during a cooldown peroid
 
 meanning if CPU policy was triggered and scaling acitivty happened the other policies for Network / Memory etc.. would not be evaluated until the cooldown period for the first policy passed
