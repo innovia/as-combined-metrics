@@ -14,21 +14,21 @@ ScaleIn:
   - Maximum
   unit: Percent
   threshold: 20
-  comparison_operator: <=
+  comparison_operator: '<='
 - metric_name: NetworkIn
   namespace: AWS/EC2
   unit: Bytes
   threshold: 188743680
   statistics:
   - Maximum
-  comparison_operator: <=
+  comparison_operator: '<='
 - metric_name: memory_usage.heapUsed.max
   namespace: node_cluster
   statistics:
   - Average
   unit: Bytes
   threshold: 7864320
-  comparison_operator: <=
+  comparison_operator: '<='
   aggregate_as_group: true
 
 
@@ -39,18 +39,18 @@ ScaleOut:
   - Maximum
   unit: Percent
   threshold: 20
-  comparison_operator: <=
+  comparison_operator: '<='
 - metric_name: NetworkIn
   namespace: AWS/EC2
   unit: Bytes
   threshold: 188743680
   statistics:
   - Maximum
-  comparison_operator: <=
+  comparison_operator: '<='
 - metric_name: memory_usage.heapUsed.max
   namespace: node_cluster
   statistics:
   - Average
   unit: Bytes
   threshold: 7864320
-  comparison_operator: <=
+  comparison_operator: '<='
