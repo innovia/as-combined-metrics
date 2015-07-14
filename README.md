@@ -81,6 +81,10 @@ options:
                                        # Default: 30
 ````
  
+you may pass ---scalein-only or --scaleout-only to have this publish only scalein / scale out metric
+
+if you choose --dryrun it will NOT publish to cloudwatch
+
 Required privileges
 -------------------
 
