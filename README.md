@@ -14,7 +14,66 @@ it will combine the metrics you want to check and only if all of them are out of
 scale in if *all* metrics are in range send a 1 (ok to scale in)
 scale out if *any* metrics are in range send a 1 (ok to scale out)
 
+How it works
+------------
 
+There's a yml config file in which you specify either a cloudformation stack name and resource (i.e AppServerGroup)
+in this config you specify the metrics tresholds and comparison operator to evalute (kind of alrams in CloudWatch)
+
+you can specify sectaions for ScaleOut and ScaleIn and their related metrics in the config file
+
+````yml
+ScaleOut:
+- metric_name: CPUUtilization
+  namespace: AWS/EC2
+  statistics:
+  - Maximum
+  unit: Percent
+  threshold: 20
+  comparison_operator: <=
+````
+
+if the autoscale group needs to be extracted from the stack name you specify (useful for discovery uisng cloudformation)
+````yml
+cloudformation:
+  enabled: true
+  stack_name: STACK_NAME_X
+  logical_resource_ids: 
+  - CloudFormation_RESOURCE_ID 
+````
+
+The app will combined the results of all metrics into a true / flase array
+for ScaleOut events it will check if any element in the array is true and will publish a custom metric (i.e ScaleOut_CPUUtilization_NetworkIn ) under the combined_metrics custom name space in CloudWatch
+
+you can then set a single alarm and a single policy to perform your scale activity if itsthe value is 1 (O.K to scale in/out)
+
+
+you run the file through the as-combined-metrics app (a backup of the config will be created)
+
+````bash
+as-combined-metrics -f path_to/combinedMetrics.yml
+````
+
+options:
+--------
+````bash
+  r, [--region=REGION]                 # AWS Region
+                                       # Default: us-east-1
+  l, [--log-level=LOG_LEVEL]           # Log level
+                                       # Default: INFO
+  f, [--config-file=CONFIG_FILE]       # Metrics config file location
+      [--scalein-only=SCALEIN_ONLY]    # gather combined metrics for scale in only
+      [--scaleout-only=SCALEOUT_ONLY]  # gather combined metrics for scale out only
+  p, [--period=N]                      # Metric datapoint last x minutes
+                                       # Default: 300
+  t, [--timeout=N]                     # Timeout (seconds) for fetching autoscale group name
+                                       # Default: 120
+  o, [--once], [--no-once]             # no loop - run once
+  d, [--dryrun], [--no-dryrun]         # do not submit metric to CloudWatch
+  i, [--interval=N]                    # interval to check metrics
+                                       # Default: 30
+````
+ 
 Required privileges
 -------------------
 
