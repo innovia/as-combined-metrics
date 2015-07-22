@@ -44,9 +44,11 @@ cloudformation:
   enabled: true
   stack_name: STACK_NAME_X
   logical_resource_ids: 
-  - CloudFormation_RESOURCE_ID 
+  - CloudFormation_RESOURCE_ID_1 
+  - CloudFormation_RESOURCE_ID_2 
 ````
-
+you can pass multiple autoscale groups given you would like to use the same metrics and tresholds for their combined metrics
+ 
 The app will combined the results of all metrics into a true / flase array
 for ScaleOut events it will check if any element in the array is true and will publish a custom metric (i.e ScaleOut_CPUUtilization_NetworkIn ) under the combined_metrics custom name space in CloudWatch on the AutoScale Group dimension you have specified in the config
 
