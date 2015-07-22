@@ -16,7 +16,8 @@ module AsCombinedMetrics::Cli::CloudFormation
 
         if !stack_info.nil?
           @autoscale_group_name = stack_info.stack_resource_detail.physical_resource_id
-          @config["autoscale_group_name"] = @autoscale_group_name
+          @config[:autoscale_group_name] ||= []
+          @config[:autoscale_group_name] << @autoscale_group_name
           File.open(options[:config_file], "w") { |f| f.write(@config.to_yaml) }
           logger.info { set_color  "AutoScale Group Name: #{@autoscale_group_name}", :cyan }
         end
@@ -27,7 +28,7 @@ module AsCombinedMetrics::Cli::CloudFormation
         end
 
         if @print_log
-          logger.error { set_color  "Unable to find the resource - #{e}", :yellow }
+          logger.error { set_color  "Unable to find the resource - #{e}, maybe wrong region or wrong AWS account?", :yellow }
           logger.info { "Will retry every 5 seconds up to maximum of #{options[:timeout]} seconds" } 
         end
 

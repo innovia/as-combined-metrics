@@ -5,7 +5,8 @@ cloudformation:
   logical_resource_ids: 
   - CloudFormation_RESOURCE_ID 
 
-autoscale_group_name: GROUP_NAME-X
+autoscale_group_name:
+  - GROUP_NAME-X
 
 ScaleIn:
 - metric_name: CPUUtilization

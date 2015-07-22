@@ -1,5 +1,4 @@
 require 'digest/sha1'
-
 class ConfigError < StandardError
 end
 
@@ -49,9 +48,8 @@ module AsCombinedMetrics::Cli::Config
 
   def process
     logger.progname = "#{Module.nesting.first.to_s} #{__method__}"
-
     if @config.has_key?(:autoscale_group_name)
-      validate_as_group(@config[:autoscale_group_name])
+      @config[:autoscale_group_name].each {|g| validate_as_group(g)}
     elsif @config[:cloudformation][:enabled]
       verify_stack_name
 

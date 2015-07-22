@@ -42,7 +42,7 @@ module AsCombinedMetrics::Cli::CloudWatch
     end
   end
 
-  def publish_metric(mode, combined_metric_value)
+  def publish_metric(mode, asg, combined_metric_value)
     logger.progname = "#{Module.nesting.first.to_s} #{__method__}"
 
     cw_options = {
@@ -51,7 +51,7 @@ module AsCombinedMetrics::Cli::CloudWatch
         metric_name: combined_metrics_name(mode),
          dimensions: [{
           name: 'AutoScalingGroupName',
-          value: @config[:autoscale_group_name]
+          value: asg
         }],
         value: combined_metric_value,
         unit: 'None'
@@ -60,8 +60,12 @@ module AsCombinedMetrics::Cli::CloudWatch
     logger.info { set_color "Options to be sent to cloudwatch: #{cw_options}", :white }
     
     begin
-      logger.info { set_color "Publishing Combined Metrics to CloudWatch...", :white }
-      @cw.put_metric_data(cw_options)      
+      if options[:dryrun]
+        logger.info { set_color "DryRun! Not Publishing Combined Metrics to CloudWatch...", :white }
+      else
+        logger.info { set_color "Publishing Combined Metrics to CloudWatch...", :white }
+        @cw.put_metric_data(cw_options)
+      end
     rescue Exception => e
       logger.error { set_color "An error occured #{e}, SDK will retry up to 3 times", :red }
     end

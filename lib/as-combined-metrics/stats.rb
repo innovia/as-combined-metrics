@@ -31,7 +31,7 @@ module AsCombinedMetrics::Cli::Stats
       exit
     end
       
-    logger.info { set_color "Combined results of #{results_array} for #{mode} is: #{combined_metric_value}", :yellow, :bold }
+    logger.info { set_color "Combined results of #{results_array} for #{mode} is: #{combined_metric_value}", :magenta }
 
     return combined_metric_value
   end
