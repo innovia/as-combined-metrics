@@ -1,5 +1,5 @@
 module AsCombinedMetrics
-  VERSION   = "1.0.2"
+  VERSION   = "1.0.5"
   ABOUT     = "as-combined-metrics v#{VERSION} (c) #{Time.now.strftime("2015-%Y")} @innovia"
 
   $:.unshift File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib]))
