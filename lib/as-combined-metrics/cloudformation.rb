@@ -10,16 +10,18 @@ module AsCombinedMetrics::Cli::CloudFormation
     until @autoscale_group_name
       begin
         stack_info = @cfm.describe_stack_resource({
-          :stack_name => @stack_name, 
+          :stack_name => @stack_name,
           :logical_resource_id => logical_resource_id
         })
 
         if !stack_info.nil?
           @autoscale_group_name = stack_info.stack_resource_detail.physical_resource_id
-          @config[:autoscale_group_name] ||= []
-          @config[:autoscale_group_name] << @autoscale_group_name
-          File.open(options[:config_file], "w") { |f| f.write(@config.to_yaml) }
-          logger.info { set_color  "AutoScale Group Name: #{@autoscale_group_name}", :cyan }
+          if !@autoscale_group_name.nil? && !@autoscale_group_name.empty?
+            @config[:autoscale_group_name] ||= []
+            @config[:autoscale_group_name] << @autoscale_group_name
+            File.open(options[:config_file], "w") { |f| f.write(@config.to_yaml) }
+            logger.info { set_color  "AutoScale Group Name: #{@autoscale_group_name}", :cyan }
+          end
         end
       rescue Exception => e
         if e.to_s.match (/Stack with name\s\S+\sdoes not exist/)
@@ -29,7 +31,7 @@ module AsCombinedMetrics::Cli::CloudFormation
 
         if @print_log
           logger.error { set_color  "Unable to find the resource - #{e}, maybe wrong region or wrong AWS account?", :yellow }
-          logger.info { "Will retry every 5 seconds up to maximum of #{options[:timeout]} seconds" } 
+          logger.info { "Will retry every 5 seconds up to maximum of #{options[:timeout]} seconds" }
         end
 
         interval = 5
