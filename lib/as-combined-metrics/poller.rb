@@ -16,6 +16,10 @@ module AsCombinedMetrics::Cli::Poller
         @config[:autoscale_group_name].each do |autoscale_group|
         logger.info "Polling metrics for #{autoscale_group} AutoScale Group on #{mode}"
           @config[mode].each do |metric|
+            logger.info "DBG We have this metric:  #{metric}"
+          end
+          
+          @config[mode].each do |metric|
             logger.info "DBG Getting stats for #{autoscale_group} AutoScale Group on metric #{metric} NOTE THIS SEEMS TO HAPPEN ONLY ONCE YES YES!"
             logger.debug "Getting stats for #{autoscale_group} AutoScale Group on metric #{metric}"
             @combined_metrics[metric[:metric_name]] ||= {}
