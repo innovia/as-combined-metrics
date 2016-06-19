@@ -1,8 +1,7 @@
 module AsCombinedMetrics::Cli::Poller
   def poll(interval)
     logger.progname = "#{Module.nesting.first.to_s} #{__method__}"
-    @combined_metrics = {}
-
+   
     if options[:scalein_only]
       modes = [:ScaleIn]
     elsif  options[:scaleout_only]
@@ -12,9 +11,11 @@ module AsCombinedMetrics::Cli::Poller
     end
 
     loop do
+      @combined_metrics = {}
       modes.each do |mode|
         @config[:autoscale_group_name].each do |autoscale_group|
         logger.info "Polling metrics for #{autoscale_group} AutoScale Group on #{mode}"
+
           @config[mode].each do |metric|
             logger.debug "Getting stats for #{autoscale_group} AutoScale Group on metric #{metric}"
             @combined_metrics[metric[:metric_name]] ||= {}
