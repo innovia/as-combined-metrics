@@ -42,7 +42,7 @@ module AsCombinedMetrics::Cli::Stats
     begin
 
       instances = []
-      instances +=  @as.describe_auto_scaling_groups({auto_scaling_group_names: [@config[:autoscale_group_name]], max_records: 1}).auto_scaling_groups.first.instances.collect {|i| i[:instance_id]} if @config.has_key?(:autoscale_group_name)
+      instances +=  @as.describe_auto_scaling_groups({auto_scaling_group_names: @config[:autoscale_group_name], max_records: 1}).auto_scaling_groups.first.instances.collect {|i| i[:instance_id]} if @config.has_key?(:autoscale_group_name)
       instances += @ec2.describe_spot_fleet_instances({spot_fleet_request_id: @config[:spot_fleet_id][0]}).active_instances.collect{|i| i[:instance_id]} if @config.has_key?(:spot_fleet_id)
 
       logger.info { set_color "Found #{instances.size} Instances for autoscale group: #{@config['autoscale_group_name']}", :magenta }
@@ -71,7 +71,7 @@ module AsCombinedMetrics::Cli::Stats
       logger.info { "Instances_aggregated_data: #{instances_aggregated_data}"  }
       
       if !instances_aggregated_data.empty?
-        case metric[:statistics][0].downcase
+        case metric[:aggregate_as_group].downcase
         when 'maximum'
           logger.info { set_color "Instances_aggregated_data [Maximum]: #{instances_aggregated_data.max}", :yellow }
           instances_aggregated_data.max
@@ -79,13 +79,15 @@ module AsCombinedMetrics::Cli::Stats
           logger.info { set_color "Instances_aggregated_data [Minimum]: #{instances_aggregated_data.min}", :yellow }
           instances_aggregated_data.min
         else
+          logger.info { set_color "Instances_aggregated_data [Average]: #{instances_aggregated_data.min}", :yellow }
           avg_array(instances_aggregated_data)
         end
       else
+        -1
         # Do not scale down - we don't have all the metric data to scale down
       end
     rescue Exception => e
-      logger.info { set_color "Error aggregating metrics #{e.message}", :red }
+      logger.warn { set_color "Error aggregating metrics #{e.message}", :red }
     end
   end
 
@@ -93,7 +95,6 @@ module AsCombinedMetrics::Cli::Stats
     logger.progname = "#{Module.nesting.first.to_s} #{__method__}"
 
     avg = (data.inject {|sum, i| sum + i }) / data.size
-    self.logger.info { set_color "Instances_aggregated_data [Average]: #{avg.round}", :white }
     avg.round 
   end
 
