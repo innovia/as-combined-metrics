@@ -49,7 +49,7 @@ class AsCombinedMetrics::Cli < Thor
     extend CloudWatch
     extend Poller
 
-    logger.info { set_color "Dry Run - will not published metrics to CloudWatch", :yellow } if options[:dryrun]
+    logger.info { set_color "Dry Run - will not publish metrics to CloudWatch", :yellow } if options[:dryrun]
     logger.info "Starting Combined Metrics on #{options[:region]} region"
     @region = options[:region]
     init_aws_sdk

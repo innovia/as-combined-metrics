@@ -7,7 +7,7 @@ module AsCombinedMetrics::Cli::CloudFormation
     @autoscale_group_name = nil
     @print_log = true
 
-    until @autoscale_group_name
+    until @autoscale_group_name || @spot_fleet_id
       begin
         stack_info = @cfm.describe_stack_resource({
           :stack_name => @stack_name,
@@ -15,13 +15,22 @@ module AsCombinedMetrics::Cli::CloudFormation
         })
 
         if !stack_info.nil?
-          @autoscale_group_name = stack_info.stack_resource_detail.physical_resource_id
-          if !@autoscale_group_name.nil? && !@autoscale_group_name.empty?
-            @config[:autoscale_group_name] ||= []
-            @config[:autoscale_group_name] << @autoscale_group_name
-            File.open(options[:config_file], "w") { |f| f.write(@config.to_yaml) }
-            logger.info { set_color  "AutoScale Group Name: #{@autoscale_group_name}", :cyan }
+          if stack_info.stack_resource_detail.resource_type == "AWS::EC2::SpotFleet"
+              @spot_fleet_id = stack_info.stack_resource_detail.physical_resource_id
+              if !@spot_fleet_id.nil? && !@spot_fleet_id.empty?
+                @config[:spot_fleet_id] ||= []
+                @config[:spot_fleet_id] << @spot_fleet_id
+                logger.info { set_color  "Spot Fleet ID: #{@autoscale_group_name}", :cyan }
+              end
+          else # default is good old auto scale group
+              @autoscale_group_name = stack_info.stack_resource_detail.physical_resource_id
+              if !@autoscale_group_name.nil? && !@autoscale_group_name.empty?
+                @config[:autoscale_group_name] ||= []
+                @config[:autoscale_group_name] << @autoscale_group_name
+                logger.info { set_color  "AutoScale Group Name: #{@autoscale_group_name}", :cyan }
+              end
           end
+          File.open(options[:config_file], "w") { |f| f.write(@config.to_yaml) }
         end
       rescue Exception => e
         if e.to_s.match (/Stack with name\s\S+\sdoes not exist/)

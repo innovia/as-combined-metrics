@@ -9,17 +9,24 @@ module AsCombinedMetrics::Cli::Aws
     @cw  = Aws::CloudWatch::Client.new()
     @cfm = Aws::CloudFormation::Client.new()
     @as  = Aws::AutoScaling::Client.new()
+    @ec2 = Aws::EC2::Client.new()
   end
 
-  def validate_as_group(autoscale_group_name)
+  def validate_as_group(asg_or_spot_fleet_id)
     logger.progname = "#{Module.nesting.first.to_s} #{__method__}"
-    logger.info { set_color "Validating #{autoscale_group_name} exists...", :white }
+    logger.info { set_color "Validating #{asg_or_spot_fleet_id} exists...", :white }
 
-    response =  @as.describe_auto_scaling_groups({auto_scaling_group_names: [autoscale_group_name], max_records: 1})
+    response =  @as.describe_auto_scaling_groups({auto_scaling_group_names: [asg_or_spot_fleet_id], max_records: 1})
 
-    if response.auto_scaling_groups.empty? || autoscale_group_name != response.auto_scaling_groups[0].auto_scaling_group_name
-      logger.fatal { set_color "Can't find AutoScale group #{autoscale_group_name} on ec2 - exiting now", :red }
-      exit 1
+    if response.auto_scaling_groups.empty? || asg_or_spot_fleet_id != response.auto_scaling_groups[0].auto_scaling_group_name
+      # maybe it's a spot fleet?
+      response2 = @ec2.describe_spot_fleet_instances({spot_fleet_request_id: asg_or_spot_fleet_id})
+      if response2.spot_fleet_request_id != asg_or_spot_fleet_id
+          logger.fatal { set_color "Can't find AutoScale group (or Spot Fleet) #{asg_or_spot_fleet_id} on ec2 - exiting now", :red }
+          exit 1
+      else
+        logger.info { set_color "O.K (it's a Spot Fleet)", :green }
+      end
     else
       logger.info { set_color "O.K", :green }
     end
