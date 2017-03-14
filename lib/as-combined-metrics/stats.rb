@@ -41,7 +41,9 @@ module AsCombinedMetrics::Cli::Stats
     logger.info { set_color "Aggregating metrics accross instances for autoscale group: #{@config[:autoscale_group_name]}" , :white}
     begin
 
-      instances =  @as.describe_auto_scaling_groups({auto_scaling_group_names: [@config[:autoscale_group_name]], max_records: 1}).auto_scaling_groups.first.instances.collect {|i| i[:instance_id]}
+      instances = []
+      instances +=  @as.describe_auto_scaling_groups({auto_scaling_group_names: [@config[:autoscale_group_name]], max_records: 1}).auto_scaling_groups.first.instances.collect {|i| i[:instance_id]} if @config.has_key?(:autoscale_group_name)
+      instances += @ec2.describe_spot_fleet_instances({spot_fleet_request_id: @config[:spot_fleet_id][0]}).active_instances.collect{|i| i[:instance_id]} if @config.has_key?(:spot_fleet_id)
 
       logger.info { set_color "Found #{instances.size} Instances for autoscale group: #{@config['autoscale_group_name']}", :magenta }
       

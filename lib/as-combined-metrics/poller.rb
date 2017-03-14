@@ -10,14 +10,14 @@ module AsCombinedMetrics::Cli::Poller
       modes = [:ScaleIn, :ScaleOut]
     end
 
+    # put ASG and SpotFleet ID into one array we can iterate over
+    groups = []
+    groups += @config[:autoscale_group_name].collect do |asg| { type: 'AutoScalingGroupName', name: asg } end if @config[:autoscale_group_name].respond_to?('collect')
+    groups += @config[:spot_fleet_id].collect do |sfid| { type: 'FleetRequestId', name: sfid } end if @config[:spot_fleet_id].respond_to?('collect')
+
     loop do
       @combined_metrics = {}
-      
-      # put ASG and SpotFleet ID into one array we can iterate over
-      groups = 
-        @config[:autoscale_group_name].collect do |asg| { type: 'AutoScalingGroupName', name: asg } end +
-        @config[:spot_fleet_id].collect do |sfid| { type: 'FleetRequestId', name: sfid } end
-        
+              
       modes.each do |mode|
         groups.each do |group|
           logger.info "Polling metrics for #{group[:name]} #{group[:type]} on #{mode}"
