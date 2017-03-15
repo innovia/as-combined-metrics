@@ -10,8 +10,10 @@ module AsCombinedMetrics::Cli::Poller
       modes = [:ScaleIn, :ScaleOut]
     end
 
+
     loop do
       @combined_metrics = {}
+              
       modes.each do |mode|
         @config[:autoscale_group_name].each do |autoscale_group|
         logger.info "Polling metrics for #{autoscale_group} AutoScale Group on #{mode}"
