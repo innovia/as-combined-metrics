@@ -1,4 +1,5 @@
 require 'digest/sha1'
+require 'fileutils'
 class ConfigError < StandardError
 end
 
@@ -49,8 +50,12 @@ module AsCombinedMetrics::Cli::Config
   def process
     logger.progname = "#{Module.nesting.first.to_s} #{__method__}"
     if @config.has_key?(:autoscale_group_name)
-      @config[:autoscale_group_name].each {|g| validate_as_group(g)}
-    elsif @config[:cloudformation][:enabled]
+      verified = @config[:autoscale_group_name].each {|g| validate_as_group(g)}
+    end
+    if @config.has_key?(:spot_fleet_id)
+      verified = @config[:spot_fleet_id].each {|g| validate_spot_fleet(g)}
+    end
+    if !verified && @config[:cloudformation][:enabled]
       verify_stack_name
 
       @config[:cloudformation][:logical_resource_ids].each do | resource |
